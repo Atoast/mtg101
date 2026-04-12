@@ -1,0 +1,132 @@
+:root {
+    --bg-color: #0f172a;
+    --sidebar-bg: #1e293b;
+    --panel-bg: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --accent: #3b82f6;
+    --hover-bg: rgba(255, 255, 255, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header & Tabs */
+.app-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem; background: #0b1120; border-bottom: 1px solid var(--border-color);
+}
+.logo { font-size: 1.25rem; font-weight: 700; color: #f8fafc; }
+.tabs { display: flex; gap: 1rem; }
+.tab-button {
+    background: none; border: none; color: var(--text-secondary);
+    padding: 1.25rem 1rem; font-size: 1rem; font-weight: 500;
+    cursor: pointer; border-bottom: 3px solid transparent;
+}
+.tab-button:hover { color: var(--text-primary); }
+.tab-button.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.app-container { display: flex; flex: 1; overflow: hidden; }
+
+/* Sidebar */
+.sidebar {
+    width: 350px; background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex; flex-direction: column; flex-shrink: 0;
+}
+.sidebar-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); }
+.sidebar-header h2 { font-size: 1.25rem; margin-bottom: 1rem; }
+.filters select, #search-input {
+    width: 100%; padding: 0.75rem; border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.05);
+    color: white; margin-bottom: 0.75rem;
+}
+.btn-gallery {
+    width: 100%; padding: 0.75rem; background: var(--accent);
+    color: white; border: none; border-radius: 6px; cursor: pointer;
+    font-weight: 500; font-size: 0.9rem; transition: background 0.2s;
+}
+.btn-gallery:hover { background: #2563eb; }
+
+.card-list { flex: 1; overflow-y: auto; list-style: none; }
+.card-item { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.card-item:hover { background-color: var(--hover-bg); }
+.card-item.active { background-color: rgba(59, 130, 246, 0.15); border-left: 4px solid var(--accent); padding-left: calc(1.5rem - 4px); }
+.card-item-name { font-weight: 500; margin-bottom: 0.25rem; }
+.card-item-type { font-size: 0.75rem; color: var(--text-secondary); }
+
+/* Mechanics Specific */
+.badge-new { background-color: #ef4444; color: white; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.65rem; font-weight: bold; margin-left: 0.5rem; }
+
+/* Main */
+.main-content { flex: 1; padding: 2rem; overflow-y: auto; }
+.flex-col { display: flex; flex-direction: column; }
+.hidden { display: none !important; }
+
+/* Grid View */
+.grid-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem; width: 100%; align-content: start;
+    padding-bottom: 2rem;
+}
+.mini-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.grid-card {
+    width: 100%; border-radius: 4.75% / 3.5%;
+    cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.grid-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 20px -3px rgba(0,0,0,0.6);
+}
+
+/* Detail View */
+.card-detail { display: flex; gap: 2rem; max-width: 1000px; margin: 0 auto; }
+.card-image-container { flex: 0 0 360px; }
+.card-image-container img { width: 100%; border-radius: 4.75% / 3.5%; box-shadow: var(--shadow-lg); }
+.card-info-panel { flex: 1; background: var(--panel-bg); border-radius: 8px; border: 1px solid var(--border-color); box-shadow: var(--shadow-lg); overflow: hidden; }
+.info-header { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); }
+.card-title { font-size: 1.5rem; font-weight: 600; }
+.mana-cost { display: flex; gap: 2px; }
+.type-line { padding: 1rem 1.5rem; font-size: 1.1rem; }
+.divider { border: 0; height: 1px; background: var(--border-color); }
+.text-box { padding: 1.5rem; font-size: 1.05rem; line-height: 1.5; }
+.oracle-text p { margin-bottom: 1rem; }
+.flavor-text { margin-top: 1.5rem; font-family: 'Playfair Display', serif; font-style: italic; color: var(--text-secondary); }
+.pt-container, .loyalty-container { padding: 1rem 1.5rem; font-weight: 600; font-size: 1.25rem; border-top: 1px solid var(--border-color); }
+.card-footer { padding: 1rem 1.5rem; background-color: rgba(255,255,255,0.02); font-size: 0.85rem; }
+.illustrator { color: var(--text-secondary); margin-bottom: 1rem; }
+.unreleased-badge { display: inline-block; background-color: #475569; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-bottom: 0.5rem; }
+.release-info p { color: var(--text-secondary); }
+
+/* Mechanics Detail */
+.mechanic-detail { max-width: 800px; margin: 0 auto; width: 100%; }
+.mechanic-header { display: flex; align-items: center; margin-bottom: 1.5rem; }
+.mechanic-header h1 { font-size: 2.5rem; color: var(--accent); }
+.mechanic-desc { background: var(--panel-bg); padding: 2rem; border-radius: 8px; border: 1px solid var(--border-color); font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem; }
+.synergy-title { font-size: 1.5rem; margin-bottom: 1rem; font-weight: 500; color: var(--text-secondary); padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
+
+/* Empty state */
+.empty-state { text-align: center; color: var(--text-secondary); padding-top: 4rem; }
+
+/* Mana Badges */
+.mana-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-weight: bold; font-size: 12px; color: #000; box-shadow: -1px 1px 0 rgba(0,0,0,0.5); }
+.mana-badge.W { background: #f8e7b9; }
+.mana-badge.U { background: #c1d8e9; }
+.mana-badge.B { background: #bab1ab; }
+.mana-badge.R { background: #e49977; }
+.mana-badge.G { background: #a3c095; }

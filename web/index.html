@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secrets of Strixhaven Viewer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-header">
+        <div class="logo">Arcavios Archival System</div>
+        <div class="tabs">
+            <button id="tab-cards" class="tab-button active">Card Database</button>
+            <button id="tab-mechanics" class="tab-button">Mechanics Dictionary</button>
+        </div>
+    </div>
+
+    <!-- CARDS VIEW -->
+    <div id="view-cards" class="app-container">
+        <!-- Sidebar for the card list -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Secrets of Strixhaven</h2>
+                <input type="text" id="search-input" placeholder="Search cards...">
+                <div class="filters">
+                    <select id="color-filter">
+                        <option value="">All Colors</option>
+                        <option value="W">White</option>
+                        <option value="U">Blue</option>
+                        <option value="B">Black</option>
+                        <option value="R">Red</option>
+                        <option value="G">Green</option>
+                        <option value="M">Multicolor</option>
+                        <option value="C">Colorless</option>
+                    </select>
+                </div>
+                <button id="btn-gallery" class="btn-gallery">⊞ Gallery View</button>
+            </div>
+            <ul id="card-list" class="card-list">
+                <!-- Card items rendered dynamically -->
+            </ul>
+        </aside>
+
+        <!-- Main content -->
+        <main class="main-content">
+            <div id="grid-view" class="grid-view">
+                <!-- Grid card images dynamically inserted -->
+            </div>
+
+            <!-- Single Card Detail -->
+            <div id="card-detail" class="card-detail hidden">
+                <div class="card-image-container">
+                    <img id="detail-image" src="" alt="Card Image">
+                </div>
+                
+                <div class="card-info-panel">
+                    <div class="info-header">
+                        <h1 id="detail-name" class="card-title"></h1>
+                        <div id="detail-mana" class="mana-cost"></div>
+                    </div>
+                    
+                    <div id="detail-type" class="type-line"></div>
+                    <hr class="divider">
+                    
+                    <div class="text-box">
+                        <div id="detail-oracle" class="oracle-text"></div>
+                        <div id="detail-flavor" class="flavor-text"></div>
+                    </div>
+                    
+                    <div id="detail-pt-container" class="pt-container">
+                        <span id="detail-pt"></span>
+                    </div>
+
+                    <div id="detail-loyalty-container" class="loyalty-container hidden">
+                        <span id="detail-loyalty"></span>
+                    </div>
+                    
+                    <hr class="divider footer-divider">
+                    
+                    <div class="card-footer">
+                        <p class="illustrator">Illustrated by <span id="detail-artist"></span></p>
+                        
+                        <div class="release-info">
+                            <span class="unreleased-badge">UNRELEASED</span>
+                            <p>This card will be released on <span id="detail-release">2026-04-24</span>, it is not legal in any format until its release date approaches.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MECHANICS VIEW (New) -->
+    <div id="view-mechanics" class="app-container hidden">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Mechanics A-Z</h2>
+            </div>
+            <ul id="mechanic-list" class="card-list">
+                <!-- Mechanics Sidebar loaded here -->
+            </ul>
+        </aside>
+        <main id="mechanics-main" class="main-content flex-col" style="scroll-behavior: smooth;">
+            <!-- All Mechanics sections loaded here as a single scrolling page -->
+        </main>
+    </div>
+
+    <!-- Script at the end of body -->
+    <script src="app.js"></script>
+</body>
+</html>

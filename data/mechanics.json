@@ -1,0 +1,304 @@
+{
+  "mechanics": [
+    {
+      "name": "Affinity",
+      "description": "This spell costs {1} less to cast for each permanent of the specified type you control.",
+      "isNew": false
+    },
+    {
+      "name": "Cascade",
+      "description": "When you cast this spell, exile cards from the top of your library until you exile a nonland card that costs less. You may cast it without paying its mana cost. Put the exiled cards on the bottom of your library in a random order.",
+      "isNew": false
+    },
+    {
+      "name": "Converge",
+      "description": "An ability word that notes effects which depend on the number of colors of mana spent to cast the spell.",
+      "isNew": false
+    },
+    {
+      "name": "Crew",
+      "description": "Tap any number of creatures you control with total power greater than or equal to this vehicle's crew value: This Vehicle becomes an artifact creature until end of turn.",
+      "isNew": false
+    },
+    {
+      "name": "Deathtouch",
+      "description": "Any amount of damage this deals to a creature is enough to destroy it.",
+      "isNew": false
+    },
+    {
+      "name": "Double strike",
+      "description": "This creature deals both first-strike and regular combat damage.",
+      "isNew": false
+    },
+    {
+      "name": "Fight",
+      "description": "Each creature deals damage equal to its power to the other.",
+      "isNew": false
+    },
+    {
+      "name": "First strike",
+      "description": "This creature deals combat damage before creatures without first strike.",
+      "isNew": false
+    },
+    {
+      "name": "Flash",
+      "description": "You may cast this spell any time you could cast an instant.",
+      "isNew": false
+    },
+    {
+      "name": "Flashback",
+      "description": "You may cast this card from your graveyard for its flashback cost. Then exile it.",
+      "isNew": false
+    },
+    {
+      "name": "Flying",
+      "description": "This creature can't be blocked except by creatures with flying or reach.",
+      "isNew": false
+    },
+    {
+      "name": "Grandeur",
+      "description": "An ability word that triggers when you discard another card with the same name as this permanent.",
+      "isNew": false
+    },
+    {
+      "name": "Haste",
+      "description": "This creature can attack and {T} as soon as it comes under your control.",
+      "isNew": false
+    },
+    {
+      "name": "Increment",
+      "description": "Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.",
+      "isNew": true
+    },
+    {
+      "name": "Infusion",
+      "description": "An ability word that grants a bonus effect if a specific condition is met, usually checking if you gained life this turn.",
+      "isNew": true
+    },
+    {
+      "name": "Landfall",
+      "description": "Whenever a land enters the battlefield under your control, this ability triggers.",
+      "isNew": false
+    },
+    {
+      "name": "Lifelink",
+      "description": "Damage dealt by this creature also causes you to gain that much life.",
+      "isNew": false
+    },
+    {
+      "name": "Menace",
+      "description": "This creature can't be blocked except by two or more creatures.",
+      "isNew": false
+    },
+    {
+      "name": "Mill",
+      "description": "Put cards from the top of your library into your graveyard.",
+      "isNew": false
+    },
+    {
+      "name": "Opus",
+      "description": "Whenever you cast an instant or sorcery spell, trigger this ability. Usually, it grants a massive bonus if five or more mana was spent to cast that spell.",
+      "isNew": true
+    },
+    {
+      "name": "Paradigm",
+      "description": "Then exile this spell. After you first resolve a spell with this name, you may cast a copy of it from exile without paying its mana cost at the beginning of each of your first main phases.",
+      "isNew": true
+    },
+    {
+      "name": "Prepared",
+      "description": "Represents an adventurer or split card mechanic. One half provides an early game spell, and the other half is the permanent.",
+      "isNew": true
+    },
+    {
+      "name": "Reach",
+      "description": "This creature can block creatures with flying.",
+      "isNew": false
+    },
+    {
+      "name": "Repartee",
+      "description": "Whenever you cast an instant or sorcery spell that targets a creature, trigger this ability.",
+      "isNew": true
+    },
+    {
+      "name": "Surveil",
+      "description": "Look at the top cards of your library. You may put any number of them into your graveyard and the rest on top of your library in any order.",
+      "isNew": false
+    },
+    {
+      "name": "Trample",
+      "description": "This creature can deal excess combat damage to the player or planeswalker it's attacking.",
+      "isNew": false
+    },
+    {
+      "name": "Treasure",
+      "description": "An artifact token that can be sacrificed to add one mana of any color.",
+      "isNew": false
+    },
+    {
+      "name": "Vigilance",
+      "description": "Attacking doesn't cause this creature to tap.",
+      "isNew": false
+    },
+    {
+      "name": "Ward",
+      "description": "Whenever this permanent becomes the target of a spell or ability an opponent controls, counter it unless that player pays the Ward cost.",
+      "isNew": false
+    },
+    {
+      "name": "Champion",
+      "description": "Exile a permanent of the specified type you control when this enters, or sacrifice it.",
+      "isNew": false
+    },
+    {
+      "name": "Connive",
+      "description": "Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on this creature.",
+      "isNew": false
+    },
+    {
+      "name": "Convoke",
+      "description": "Your creatures can help cast this spell. Each creature you tap pays for {1} or one mana of that creature's color.",
+      "isNew": false
+    },
+    {
+      "name": "Council's dilemma",
+      "description": "A voting mechanic where players vote and the spell has a cumulative effect for each vote.",
+      "isNew": false
+    },
+    {
+      "name": "Cycling",
+      "description": "Pay the cycling cost and discard this card to draw a card.",
+      "isNew": false
+    },
+    {
+      "name": "Delirium",
+      "description": "An ability word that cares if there are four or more card types among cards in your graveyard.",
+      "isNew": false
+    },
+    {
+      "name": "Enchant",
+      "description": "This aura targets a specific type of permanent or player.",
+      "isNew": false
+    },
+    {
+      "name": "Enrage",
+      "description": "Whenever this creature is dealt damage, trigger an effect.",
+      "isNew": false
+    },
+    {
+      "name": "Equip",
+      "description": "Pay the equip cost to attach this equipment to target creature you control.",
+      "isNew": false
+    },
+    {
+      "name": "Evoke",
+      "description": "You may cast this spell for its evoke cost. If you do, it's sacrificed when it enters the battlefield.",
+      "isNew": false
+    },
+    {
+      "name": "Ferocious",
+      "description": "An ability word that checks if you control a creature with power 4 or greater.",
+      "isNew": false
+    },
+    {
+      "name": "Hexproof",
+      "description": "This permanent cannot be the target of spells or abilities your opponents control.",
+      "isNew": false
+    },
+    {
+      "name": "Imprint",
+      "description": "Exile a card to imprint it. The permanent will refer to the exiled card for its effects.",
+      "isNew": false
+    },
+    {
+      "name": "Improvise",
+      "description": "Your artifacts can help cast this spell. Each artifact you tap after you're done activating mana abilities pays for {1}.",
+      "isNew": false
+    },
+    {
+      "name": "Indestructible",
+      "description": "Effects that say \"destroy\" don't destroy this permanent.",
+      "isNew": false
+    },
+    {
+      "name": "Investigate",
+      "description": "Create a Clue token. (It's an artifact with \"{2}, Sacrifice this artifact: Draw a card.\")",
+      "isNew": false
+    },
+    {
+      "name": "Kicker",
+      "description": "You may pay an additional cost as you cast this spell. If you do, the spell is kicked.",
+      "isNew": false
+    },
+    {
+      "name": "Magecraft",
+      "description": "Whenever you cast or copy an instant or sorcery spell, trigger an effect.",
+      "isNew": false
+    },
+    {
+      "name": "Metalcraft",
+      "description": "An ability word that gives a bonus if you control three or more artifacts.",
+      "isNew": false
+    },
+    {
+      "name": "Morbid",
+      "description": "An ability word that triggers if a creature died this turn.",
+      "isNew": false
+    },
+    {
+      "name": "Morph",
+      "description": "You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.",
+      "isNew": false
+    },
+    {
+      "name": "Overload",
+      "description": "You may cast this spell for its overload cost. If you do, change its text by replacing all instances of \"target\" with \"each\".",
+      "isNew": false
+    },
+    {
+      "name": "Partner",
+      "description": "You can have two commanders if both have partner.",
+      "isNew": false
+    },
+    {
+      "name": "Role token",
+      "description": "Aura tokens attached to creatures that grant stats or abilities. A creature can only have one Role controlled by the same player at a time.",
+      "isNew": false
+    },
+    {
+      "name": "Scry",
+      "description": "Look at the top cards of your library, then put any number of them on the bottom of your library and the rest on top in any order.",
+      "isNew": false
+    },
+    {
+      "name": "Shroud",
+      "description": "This permanent cannot be the target of spells or abilities.",
+      "isNew": false
+    },
+    {
+      "name": "Split second",
+      "description": "As long as this spell is on the stack, players can't cast spells or activate abilities that aren't mana abilities.",
+      "isNew": false
+    },
+    {
+      "name": "Spree",
+      "description": "Choose one or more additional costs as you cast this spell to gain its effects.",
+      "isNew": false
+    },
+    {
+      "name": "Storm",
+      "description": "When you cast this spell, copy it for each spell cast before it this turn. You may choose new targets for the copies.",
+      "isNew": false
+    },
+    {
+      "name": "Suspend",
+      "description": "Rather than cast this card from your hand, you may pay its suspend cost and exile it with N time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, cast it without paying its mana cost.",
+      "isNew": false
+    },
+    {
+      "name": "Vivid",
+      "description": "A land cycle that enters tapped with charge counters, which can be removed to produce mana of any color.",
+      "isNew": false
+    }
+  ]
+}
