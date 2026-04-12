@@ -9,6 +9,13 @@
     --accent: #3b82f6;
     --hover-bg: rgba(255, 255, 255, 0.05);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+
+    /* College Colors */
+    --silverquill: #cbd5e1;
+    --prismari: #38bdf8;
+    --witherbloom: #4ade80;
+    --lorehold: #f87171;
+    --quandrix: #2dd4bf;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -76,6 +83,13 @@ body {
 .flex-col { display: flex; flex-direction: column; }
 .hidden { display: none !important; }
 
+/* Modal */
+.modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+.modal-content { position: relative; z-index: 1001; max-width: 1000px; width: 90%; max-height: 90vh; overflow-y: auto; background: var(--bg-color); border-radius: 8px; padding: 2rem; box-shadow: var(--shadow-lg); border: 1px solid var(--border-color); }
+.modal-close { position: absolute; top: 1rem; right: 1.5rem; background: none; border: none; font-size: 2.5rem; color: var(--text-secondary); cursor: pointer; line-height: 1; z-index: 10; padding: 0.5rem; }
+.modal-close:hover { color: white; }
+
 /* Grid View */
 .grid-view {
     display: grid;
@@ -113,15 +127,33 @@ body {
 .unreleased-badge { display: inline-block; background-color: #475569; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-bottom: 0.5rem; }
 .release-info p { color: var(--text-secondary); }
 
-/* Mechanics Detail */
-.mechanic-detail { max-width: 800px; margin: 0 auto; width: 100%; }
-.mechanic-header { display: flex; align-items: center; margin-bottom: 1.5rem; }
-.mechanic-header h1 { font-size: 2.5rem; color: var(--accent); }
-.mechanic-desc { background: var(--panel-bg); padding: 2rem; border-radius: 8px; border: 1px solid var(--border-color); font-size: 1.1rem; line-height: 1.6; margin-bottom: 2rem; }
-.synergy-title { font-size: 1.5rem; margin-bottom: 1rem; font-weight: 500; color: var(--text-secondary); padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
+/* Colleges View */
+.college-header-area { padding: 2rem 3rem 0; background: var(--panel-bg); border-bottom: 1px solid var(--border-color); }
+.college-selector { display: flex; gap: 1rem; margin-bottom: 2rem; overflow-x: auto; }
+.college-btn { flex: 1; padding: 1rem; text-align: center; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: var(--text-secondary); border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
+.college-btn:hover { background: rgba(255,255,255,0.05); color: white; }
+.college-btn.active { color: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.3); border-width: 2px; }
+.college-btn[data-college="silverquill"].active { border-color: var(--silverquill); background: rgba(203, 213, 225, 0.1); }
+.college-btn[data-college="prismari"].active { border-color: var(--prismari); background: rgba(56, 189, 248, 0.1); }
+.college-btn[data-college="witherbloom"].active { border-color: var(--witherbloom); background: rgba(74, 222, 128, 0.1); }
+.college-btn[data-college="lorehold"].active { border-color: var(--lorehold); background: rgba(248, 113, 113, 0.1); }
+.college-btn[data-college="quandrix"].active { border-color: var(--quandrix); background: rgba(45, 212, 191, 0.1); }
 
-/* Empty state */
-.empty-state { text-align: center; color: var(--text-secondary); padding-top: 4rem; }
+.college-info-panel { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.college-info-left h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.college-info-left p { color: var(--text-secondary); font-size: 1.1rem; font-style: italic; font-family: 'Playfair Display', serif; }
+
+.clg-stat { background: rgba(0,0,0,0.3); padding: 1rem 1.5rem; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
+.clg-stat-num { display: block; font-size: 2.5rem; font-weight: 700; line-height: 1; margin-bottom: 0.25rem; color: var(--accent); }
+.clg-stat-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+
+.college-controls { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; font-size: 1rem; }
+.college-controls select { padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: white; cursor: pointer; }
+
+.college-groups-container { flex: 1; overflow-y: auto; padding: 2rem 3rem; background: var(--bg-color); }
+.group-section { margin-bottom: 4rem; }
+.group-section-header { font-size: 1.5rem; font-weight: 600; padding-bottom: 0.5rem; border-bottom: 2px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: bottom; }
+.group-count { font-size: 1rem; font-weight: 400; color: var(--text-muted); }
 
 /* Mana Badges */
 .mana-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-weight: bold; font-size: 12px; color: #000; box-shadow: -1px 1px 0 rgba(0,0,0,0.5); }

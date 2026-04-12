@@ -13,6 +13,7 @@
         <div class="tabs">
             <button id="tab-cards" class="tab-button active">Card Database</button>
             <button id="tab-mechanics" class="tab-button">Mechanics Dictionary</button>
+            <button id="tab-colleges" class="tab-button">Colleges Preview</button>
         </div>
     </div>
 
@@ -38,14 +39,12 @@
                 <button id="btn-gallery" class="btn-gallery">⊞ Gallery View</button>
             </div>
             <ul id="card-list" class="card-list">
-                <!-- Card items rendered dynamically -->
             </ul>
         </aside>
 
         <!-- Main content -->
         <main class="main-content">
             <div id="grid-view" class="grid-view">
-                <!-- Grid card images dynamically inserted -->
             </div>
 
             <!-- Single Card Detail -->
@@ -91,19 +90,104 @@
         </main>
     </div>
 
-    <!-- MECHANICS VIEW (New) -->
+    <!-- MECHANICS VIEW -->
     <div id="view-mechanics" class="app-container hidden">
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h2>Mechanics A-Z</h2>
             </div>
             <ul id="mechanic-list" class="card-list">
-                <!-- Mechanics Sidebar loaded here -->
             </ul>
         </aside>
         <main id="mechanics-main" class="main-content flex-col" style="scroll-behavior: smooth;">
-            <!-- All Mechanics sections loaded here as a single scrolling page -->
         </main>
+    </div>
+
+    <!-- COLLEGES VIEW -->
+    <div id="view-colleges" class="app-container flex-col hidden">
+        <div class="college-header-area">
+            <div class="college-selector">
+                <button class="college-btn active" data-college="silverquill">Silverquill (W/B)</button>
+                <button class="college-btn" data-college="prismari">Prismari (U/R)</button>
+                <button class="college-btn" data-college="witherbloom">Witherbloom (B/G)</button>
+                <button class="college-btn" data-college="lorehold">Lorehold (R/W)</button>
+                <button class="college-btn" data-college="quandrix">Quandrix (G/U)</button>
+            </div>
+            
+            <div class="college-info-panel">
+                <div class="college-info-left">
+                    <h1 id="clg-title">Silverquill</h1>
+                    <p id="clg-lore" class="college-lore">Stylish wordsmiths who master the magic of words, from inspiring battle poetry to biting arcane insults.</p>
+                </div>
+                <div class="college-info-right">
+                    <div class="clg-stat">
+                        <span id="clg-playable-count" class="clg-stat-num">0</span>
+                        <span class="clg-stat-label">Playable Cards</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="college-controls">
+                <span><strong>Group Pool By:</strong></span>
+                <select id="clg-group-by">
+                    <option value="mana">Mana Value</option>
+                    <option value="rarity">Rarity</option>
+                    <option value="type">Card Type</option>
+                    <option value="keyword">Keyword</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="college-groups-container" class="college-groups-container">
+            <!-- Dynamic grouped grids injected here -->
+        </div>
+    </div>
+
+    <!-- MODAL VIEW -->
+    <div id="card-modal" class="modal hidden">
+        <div class="modal-overlay" id="modal-overlay"></div>
+        <div class="modal-content">
+            <button id="modal-close" class="modal-close">&times;</button>
+            <div class="card-detail">
+                <div class="card-image-container">
+                    <img id="modal-image" src="" alt="Card Image">
+                </div>
+                
+                <div class="card-info-panel">
+                    <div class="info-header">
+                        <h1 id="modal-name" class="card-title"></h1>
+                        <div id="modal-mana" class="mana-cost"></div>
+                    </div>
+                    
+                    <div id="modal-type" class="type-line"></div>
+                    <hr class="divider">
+                    
+                    <div class="text-box">
+                        <div id="modal-oracle" class="oracle-text"></div>
+                        <div id="modal-flavor" class="flavor-text"></div>
+                    </div>
+                    
+                    <div id="modal-pt-container" class="pt-container">
+                        <span id="modal-pt"></span>
+                    </div>
+
+                    <div id="modal-loyalty-container" class="loyalty-container hidden">
+                        <span id="modal-loyalty"></span>
+                    </div>
+                    
+                    <hr class="divider footer-divider">
+                    
+                    <div class="card-footer">
+                        <p class="illustrator">Illustrated by <span id="modal-artist"></span></p>
+                        
+                        <div class="release-info">
+                            <span class="unreleased-badge">UNRELEASED</span>
+                            <p>This card will be released on <span id="modal-release">2026-04-24</span>, it is not legal in any format until its release date approaches.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Script at the end of body -->
