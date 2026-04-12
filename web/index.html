@@ -14,6 +14,7 @@
             <button id="tab-cards" class="tab-button active">Card Database</button>
             <button id="tab-mechanics" class="tab-button">Mechanics Dictionary</button>
             <button id="tab-colleges" class="tab-button">Colleges Preview</button>
+            <button id="tab-simulator" class="tab-button">Prerelease Simulator</button>
         </div>
     </div>
 
@@ -43,50 +44,9 @@
         </aside>
 
         <!-- Main content -->
-        <main class="main-content">
-            <div id="grid-view" class="grid-view">
-            </div>
-
-            <!-- Single Card Detail -->
-            <div id="card-detail" class="card-detail hidden">
-                <div class="card-image-container">
-                    <img id="detail-image" src="" alt="Card Image">
-                </div>
-                
-                <div class="card-info-panel">
-                    <div class="info-header">
-                        <h1 id="detail-name" class="card-title"></h1>
-                        <div id="detail-mana" class="mana-cost"></div>
-                    </div>
-                    
-                    <div id="detail-type" class="type-line"></div>
-                    <hr class="divider">
-                    
-                    <div class="text-box">
-                        <div id="detail-oracle" class="oracle-text"></div>
-                        <div id="detail-flavor" class="flavor-text"></div>
-                    </div>
-                    
-                    <div id="detail-pt-container" class="pt-container">
-                        <span id="detail-pt"></span>
-                    </div>
-
-                    <div id="detail-loyalty-container" class="loyalty-container hidden">
-                        <span id="detail-loyalty"></span>
-                    </div>
-                    
-                    <hr class="divider footer-divider">
-                    
-                    <div class="card-footer">
-                        <p class="illustrator">Illustrated by <span id="detail-artist"></span></p>
-                        
-                        <div class="release-info">
-                            <span class="unreleased-badge">UNRELEASED</span>
-                            <p>This card will be released on <span id="detail-release">2026-04-24</span>, it is not legal in any format until its release date approaches.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <main class="main-content" id="database-main" style="scroll-behavior: smooth;">
+            <div id="grid-view" class="grid-view hidden"></div>
+            <div id="detailed-view" class="detailed-view"></div>
         </main>
     </div>
 
@@ -143,6 +103,40 @@
         </div>
     </div>
 
+    <!-- SIMULATOR VIEW -->
+    <div id="view-simulator" class="app-container flex-col hidden">
+        <div class="college-header-area">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem;">
+                <h1 style="font-size:2rem;">Prerelease Sealed Simulator</h1>
+                <button id="btn-generate-pool" style="background:var(--accent); color:white; border:none; padding:1rem 2rem; border-radius:8px; font-size:1.1rem; font-weight:bold; cursor:pointer;">Generate Sealed Pool</button>
+            </div>
+            
+            <div class="college-selector">
+                <button class="college-btn active" data-college="silverquill">Silverquill (W/B)</button>
+                <button class="college-btn" data-college="prismari">Prismari (U/R)</button>
+                <button class="college-btn" data-college="witherbloom">Witherbloom (B/G)</button>
+                <button class="college-btn" data-college="lorehold">Lorehold (R/W)</button>
+                <button class="college-btn" data-college="quandrix">Quandrix (G/U)</button>
+            </div>
+
+            <div class="college-controls" style="margin-top:-1rem;">
+                <span><strong>Group Pool By:</strong></span>
+                <select id="sim-group-by">
+                    <option value="mana">Mana Value</option>
+                    <option value="rarity">Rarity</option>
+                    <option value="type">Card Type</option>
+                    <option value="keyword">Keyword</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="sim-groups-container" class="college-groups-container">
+            <div style="text-align:center; padding: 4rem; color:var(--text-muted); font-size:1.2rem;">
+                Select a College and click "Generate Sealed Pool" to crack 6 packs!
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL VIEW -->
     <div id="card-modal" class="modal hidden">
         <div class="modal-overlay" id="modal-overlay"></div>
@@ -190,7 +184,8 @@
         </div>
     </div>
 
-    <!-- Script at the end of body -->
+    <!-- Scripts -->
     <script src="app.js"></script>
+    <script src="simulator.js"></script>
 </body>
 </html>

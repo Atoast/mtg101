@@ -1,35 +1,27 @@
 let allCards = [];
 let currentFiltered = [];
 let allMechanics = [];
+let appViewMode = 'detailed'; // or 'gallery'
 
 // App Navigation
 const tabCards = document.getElementById('tab-cards');
 const tabMechanics = document.getElementById('tab-mechanics');
 const tabColleges = document.getElementById('tab-colleges');
+const tabSimulator = document.getElementById('tab-simulator');
 const viewCards = document.getElementById('view-cards');
 const viewMechanics = document.getElementById('view-mechanics');
 const viewColleges = document.getElementById('view-colleges');
+const viewSimulator = document.getElementById('view-simulator');
 
+// Cards View Elements
 // Cards View Elements
 const searchInput = document.getElementById('search-input');
 const colorFilter = document.getElementById('color-filter');
 const cardListEl = document.getElementById('card-list');
 const btnGallery = document.getElementById('btn-gallery');
 const gridView = document.getElementById('grid-view');
-const cardDetail = document.getElementById('card-detail');
-// Cards Detail elements
-const detailImage = document.getElementById('detail-image');
-const detailName = document.getElementById('detail-name');
-const detailMana = document.getElementById('detail-mana');
-const detailType = document.getElementById('detail-type');
-const detailOracle = document.getElementById('detail-oracle');
-const detailFlavor = document.getElementById('detail-flavor');
-const detailPtContainer = document.getElementById('detail-pt-container');
-const detailPt = document.getElementById('detail-pt');
-const detailLoyaltyContainer = document.getElementById('detail-loyalty-container');
-const detailLoyalty = document.getElementById('detail-loyalty');
-const detailArtist = document.getElementById('detail-artist');
-const detailRelease = document.getElementById('detail-release');
+const detailedView = document.getElementById('detailed-view');
+const databaseMain = document.getElementById('database-main');
 
 // Mechanics View Elements
 const mechanicListEl = document.getElementById('mechanic-list');
@@ -79,8 +71,8 @@ async function init() {
 // TABS LOGIC
 // ========================
 function switchTab(tabName) {
-    [tabCards, tabMechanics, tabColleges].forEach(b => b.classList.remove('active'));
-    [viewCards, viewMechanics, viewColleges].forEach(v => v.classList.add('hidden'));
+    [tabCards, tabMechanics, tabColleges, tabSimulator].forEach(b => b.classList.remove('active'));
+    [viewCards, viewMechanics, viewColleges, viewSimulator].forEach(v => v.classList.add('hidden'));
 
     if (tabName === 'cards') {
         tabCards.classList.add('active'); viewCards.classList.remove('hidden');
@@ -89,12 +81,15 @@ function switchTab(tabName) {
     } else if (tabName === 'colleges') {
         tabColleges.classList.add('active'); viewColleges.classList.remove('hidden');
         updateCollegeView();
+    } else if (tabName === 'simulator') {
+        tabSimulator.classList.add('active'); viewSimulator.classList.remove('hidden');
     }
 }
 
 tabCards.addEventListener('click', () => switchTab('cards'));
 tabMechanics.addEventListener('click', () => switchTab('mechanics'));
 tabColleges.addEventListener('click', () => switchTab('colleges'));
+tabSimulator.addEventListener('click', () => switchTab('simulator'));
 
 // ========================
 // COLLEGES LOGIC
@@ -331,55 +326,73 @@ function renderGallery(cards) {
     });
 }
 
-function renderList(cards) {
-    cardListEl.innerHTML = '';
+function renderDetailedView(cards) {
+    detailedView.innerHTML = '';
     cards.forEach(card => {
-        const li = document.createElement('li');
-        li.className = 'card-item';
-        li.dataset.name = card.name;
-        li.innerHTML = `<div class="card-item-name">${card.name}</div><div class="card-item-type">${card.type_line}</div>`;
-        li.addEventListener('click', () => selectCard(card));
-        cardListEl.appendChild(li);
+        const imgSrc = getCardImage(card);
+        if (!imgSrc) return;
+
+        let flavorHtml = card.flavor_text ? `<div class="dc-flavor">"${card.flavor_text}"</div>` : '';
+        let ptHtml = (card.power && card.toughness) ? `<div class="dc-pt">${card.power}/${card.toughness}</div>` : '';
+        if (card.loyalty) ptHtml = `<div class="dc-pt">Loyalty: ${card.loyalty}</div>`;
+
+        const div = document.createElement('div');
+        div.className = 'detailed-card';
+        div.id = `dc-${card.name.replace(/\s+/g, '-')}`;
+        div.innerHTML = `
+            <div class="dc-image">
+                <img src="${imgSrc}" title="${card.name}">
+            </div>
+            <div class="dc-info">
+                <div class="dc-header">
+                    <h3 class="dc-title">${card.name}</h3>
+                    <div class="mana-cost">${parseManaCost(card.mana_cost)}</div>
+                </div>
+                <div class="dc-type">${card.type_line || ''}</div>
+                <hr class="dc-divider">
+                <div class="dc-oracle">${formatOracleText(card.oracle_text)}</div>
+                ${flavorHtml}
+                ${ptHtml}
+            </div>
+        `;
+
+        div.querySelector('.dc-image img').addEventListener('click', () => openCardModal(card));
+        div.querySelector('.dc-title').addEventListener('click', () => openCardModal(card));
+        
+        detailedView.appendChild(div);
     });
 }
 
-function selectCard(card) {
-    gridView.classList.add('hidden');
-    cardDetail.classList.remove('hidden');
+function handleSidebarClick(card) {
     document.querySelectorAll('#card-list .card-item').forEach(el => {
         if (el.dataset.name === card.name) el.classList.add('active');
         else el.classList.remove('active');
     });
 
-    detailImage.src = getCardImage(card);
-    detailName.textContent = card.name;
-    detailMana.innerHTML = parseManaCost(card.mana_cost);
-    detailType.textContent = card.type_line;
-    detailOracle.innerHTML = formatOracleText(card.oracle_text);
-    
-    if (card.flavor_text) {
-        detailFlavor.innerHTML = `<p>"${card.flavor_text}"</p>`;
-        detailFlavor.classList.remove('hidden');
-    } else detailFlavor.classList.add('hidden');
-
-    if (card.power && card.toughness) {
-        detailPt.textContent = `${card.power}/${card.toughness}`;
-        detailPtContainer.classList.remove('hidden');
-    } else detailPtContainer.classList.add('hidden');
-
-    if (card.loyalty) {
-        detailLoyalty.textContent = `Loyalty: ${card.loyalty}`;
-        detailLoyaltyContainer.classList.remove('hidden');
-    } else detailLoyaltyContainer.classList.add('hidden');
-
-    detailArtist.textContent = card.artist || 'Unknown';
-    detailRelease.textContent = card.released_at || '2026-04-24';
+    if (appViewMode === 'gallery') {
+        openCardModal(card);
+    } else {
+        const target = document.getElementById(`dc-${card.name.replace(/\s+/g, '-')}`);
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            target.style.boxShadow = '0 0 0 2px var(--accent)';
+            setTimeout(() => target.style.boxShadow = '', 2000);
+        }
+    }
 }
 
-function showGalleryView() {
-    document.querySelectorAll('#card-list .card-item').forEach(el => el.classList.remove('active'));
-    cardDetail.classList.add('hidden');
-    gridView.classList.remove('hidden');
+function toggleViewMode() {
+    if (appViewMode === 'detailed') {
+        appViewMode = 'gallery';
+        btnGallery.textContent = '≣ Detailed View';
+        detailedView.classList.add('hidden');
+        gridView.classList.remove('hidden');
+    } else {
+        appViewMode = 'detailed';
+        btnGallery.textContent = '⊞ Gallery View';
+        gridView.classList.add('hidden');
+        detailedView.classList.remove('hidden');
+    }
 }
 
 function applyFilters() {
@@ -395,13 +408,27 @@ function applyFilters() {
         
         return matchesQuery && matchesColor;
     });
-    renderList(currentFiltered);
-    renderGallery(currentFiltered);
+    
+    // Limit to 200 to prevent severe DOM lag in detailed view
+    const toRender = currentFiltered.slice(0, 200);
+
+    cardListEl.innerHTML = '';
+    toRender.forEach(card => {
+        const li = document.createElement('li');
+        li.className = 'card-item';
+        li.dataset.name = card.name;
+        li.innerHTML = `<div class="card-item-name">${card.name}</div><div class="card-item-type">${card.type_line}</div>`;
+        li.addEventListener('click', () => handleSidebarClick(card));
+        cardListEl.appendChild(li);
+    });
+
+    renderGallery(toRender);
+    renderDetailedView(toRender);
 }
 
 searchInput.addEventListener('input', applyFilters);
 colorFilter.addEventListener('change', applyFilters);
-btnGallery.addEventListener('click', showGalleryView);
+btnGallery.addEventListener('click', toggleViewMode);
 
 function openCardModal(card) {
     document.getElementById('modal-image').src = getCardImage(card);
