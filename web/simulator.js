@@ -46,16 +46,18 @@ function generatePrereleasePool(collegeId) {
     const seededUncommons = uncommons.filter(isLegalInCollege);
     const seededRares = raresAndMythics.filter(isLegalInCollege);
 
-    simulatedPool.push(...getRandomN(seededCommons, 8));
-    simulatedPool.push(...getRandomN(seededUncommons, 3));
+    const tagOrigin = (cardsPool, originName) => cardsPool.map(c => ({ ...c, _origin: originName }));
+
+    simulatedPool.push(...tagOrigin(getRandomN(seededCommons, 8), 'seeded'));
+    simulatedPool.push(...tagOrigin(getRandomN(seededUncommons, 3), 'seeded'));
     
     // Guaranteed rare/mythic for college
     const collegeRare = getRandom(seededRares);
-    simulatedPool.push(collegeRare);
+    simulatedPool.push(...tagOrigin([collegeRare], 'seeded'));
 
     // Guaranteed foil promo for college
     const promoFoil = getRandom(seededRares);
-    simulatedPool.push(promoFoil);
+    simulatedPool.push(...tagOrigin([promoFoil], 'seeded'));
 
     // 2. Generate 5x Play Boosters
     for (let p = 0; p < 5; p++) {
@@ -67,28 +69,28 @@ function generatePrereleasePool(collegeId) {
         // 1 Foil Wildcard (any rarity)
         // 1 Land (we skip basic lands for the visual pool if we don't have them, or just use another common)
 
-        simulatedPool.push(...getRandomN(commons, 7)); // Using 7 commons to replace the land slot
-        simulatedPool.push(...getRandomN(uncommons, 3));
-        simulatedPool.push(getRandom(raresAndMythics));
+        simulatedPool.push(...tagOrigin(getRandomN(commons, 7), 'play')); // Using 7 commons to replace the land slot
+        simulatedPool.push(...tagOrigin(getRandomN(uncommons, 3), 'play'));
+        simulatedPool.push(...tagOrigin([getRandom(raresAndMythics)], 'play'));
 
         // Special Slot (15% SOA, 5% SPG, 80% Common)
         const roll = Math.random();
         if (roll < 0.05 && spgCards.length > 0) {
-            simulatedPool.push(getRandom(spgCards));
+            simulatedPool.push(...tagOrigin([getRandom(spgCards)], 'play'));
         } else if (roll < 0.20 && soaCards.length > 0) {
-            simulatedPool.push(getRandom(soaCards));
+            simulatedPool.push(...tagOrigin([getRandom(soaCards)], 'play'));
         } else {
-            simulatedPool.push(getRandom(commons));
+            simulatedPool.push(...tagOrigin([getRandom(commons)], 'play'));
         }
 
         // Foil Wildcard (any rarity, 10% rare/mythic, 25% uncommon, 65% common)
         const foilRoll = Math.random();
         if (foilRoll < 0.10) {
-            simulatedPool.push(getRandom(raresAndMythics));
+            simulatedPool.push(...tagOrigin([getRandom(raresAndMythics)], 'play'));
         } else if (foilRoll < 0.35) {
-            simulatedPool.push(getRandom(uncommons));
+            simulatedPool.push(...tagOrigin([getRandom(uncommons)], 'play'));
         } else {
-            simulatedPool.push(getRandom(commons));
+            simulatedPool.push(...tagOrigin([getRandom(commons)], 'play'));
         }
     }
 
@@ -99,6 +101,7 @@ function generatePrereleasePool(collegeId) {
 const btnGeneratePool = document.getElementById('btn-generate-pool');
 const simGroupsContainer = document.getElementById('sim-groups-container');
 const simGroupBy = document.getElementById('sim-group-by');
+const simOriginFilter = document.getElementById('sim-origin-filter');
 const simCollegeBtns = document.querySelectorAll('#view-simulator .college-btn');
 let activeSimCollege = 'silverquill';
 
@@ -127,12 +130,23 @@ simGroupBy.addEventListener('change', () => {
     }
 });
 
+simOriginFilter.addEventListener('change', () => {
+    if (simulatedPool.length > 0) {
+        renderSimulatorPool(simulatedPool);
+    }
+});
+
 function renderSimulatorPool(pool) {
     const clg = COLLEGES[activeSimCollege];
     const groupBy = simGroupBy.value;
+    const originFilter = simOriginFilter.value;
     const groups = {};
 
-    pool.forEach(card => {
+    let viewPool = pool;
+    if (originFilter === 'seeded') viewPool = pool.filter(c => c._origin === 'seeded');
+    else if (originFilter === 'play') viewPool = pool.filter(c => c._origin === 'play');
+
+    viewPool.forEach(card => {
         let keys = [];
         if (groupBy === 'mana') {
             keys.push(card.cmc !== undefined ? `Mana Value ${Math.min(card.cmc, 7)}${card.cmc >= 7 ? '+' : ''}` : 'Lands/0');
@@ -171,7 +185,7 @@ function renderSimulatorPool(pool) {
             return numA - numB;
         });
     } else if (groupBy === 'rarity') {
-        const rOrder = ['Common', 'Uncommon', 'Rare', 'Mythic'];
+        const rOrder = ['Mythic', 'Rare', 'Uncommon', 'Common'];
         sortedKeys.sort((a,b) => rOrder.indexOf(a) - rOrder.indexOf(b));
     } else if (groupBy === 'keyword') {
         sortedKeys.sort((a,b) => {
@@ -185,7 +199,7 @@ function renderSimulatorPool(pool) {
 
     simGroupsContainer.innerHTML = `
         <div style="font-size:1.2rem; font-weight:600; color:${clg.colorHex}; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom:1rem;">
-            Total Pool: ${pool.length} Cards
+            Showing: ${originFilter === 'all' ? 'Entire Pool' : (originFilter === 'seeded' ? 'Seeded Booster Only' : 'Play Boosters Only')} (${viewPool.length} Cards)
         </div>
     `;
 

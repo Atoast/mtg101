@@ -173,7 +173,7 @@ function updateCollegeView() {
             return numA - numB;
         });
     } else if (groupBy === 'rarity') {
-        const rOrder = ['Common', 'Uncommon', 'Rare', 'Mythic'];
+        const rOrder = ['Mythic', 'Rare', 'Uncommon', 'Common'];
         sortedKeys.sort((a,b) => rOrder.indexOf(a) - rOrder.indexOf(b));
     } else if (groupBy === 'keyword') {
         sortedKeys.sort((a,b) => {
