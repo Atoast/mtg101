@@ -102,6 +102,7 @@ const btnGeneratePool = document.getElementById('btn-generate-pool');
 const simGroupsContainer = document.getElementById('sim-groups-container');
 const simGroupBy = document.getElementById('sim-group-by');
 const simOriginFilter = document.getElementById('sim-origin-filter');
+const simColorFilter = document.getElementById('sim-color-filter');
 const simCollegeBtns = document.querySelectorAll('#view-simulator .college-btn');
 let activeSimCollege = 'silverquill';
 
@@ -136,15 +137,31 @@ simOriginFilter.addEventListener('change', () => {
     }
 });
 
+simColorFilter.addEventListener('change', () => {
+    if (simulatedPool.length > 0) {
+        renderSimulatorPool(simulatedPool);
+    }
+});
+
 function renderSimulatorPool(pool) {
     const clg = COLLEGES[activeSimCollege];
     const groupBy = simGroupBy.value;
     const originFilter = simOriginFilter.value;
+    const colorFilter = simColorFilter.value;
     const groups = {};
 
     let viewPool = pool;
     if (originFilter === 'seeded') viewPool = pool.filter(c => c._origin === 'seeded');
     else if (originFilter === 'play') viewPool = pool.filter(c => c._origin === 'play');
+
+    if (colorFilter === 'on-color') {
+        const isLegal = (c) => {
+            const iden = c.color_identity || [];
+            if (iden.length === 0) return true;
+            return iden.every(color => clg.colors.includes(color));
+        };
+        viewPool = viewPool.filter(isLegal);
+    }
 
     viewPool.forEach(card => {
         let keys = [];
@@ -199,7 +216,7 @@ function renderSimulatorPool(pool) {
 
     simGroupsContainer.innerHTML = `
         <div style="font-size:1.2rem; font-weight:600; color:${clg.colorHex}; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom:1rem;">
-            Showing: ${originFilter === 'all' ? 'Entire Pool' : (originFilter === 'seeded' ? 'Seeded Booster Only' : 'Play Boosters Only')} (${viewPool.length} Cards)
+            Showing: ${originFilter === 'all' ? 'Entire Pool' : (originFilter === 'seeded' ? 'Seeded Booster Only' : 'Play Boosters Only')} (${viewPool.length} Cards) ${colorFilter === 'on-color' ? '<span style="font-size:0.9rem; opacity:0.8;">[College Legal Only]</span>' : ''}
         </div>
     `;
 
@@ -235,7 +252,7 @@ function renderSimulatorPool(pool) {
             const cName = e.target.dataset.name;
             const card = pool.find(c => c.name === cName);
             if (card) {
-                openCardModal(card);
+                openCardModal(card, viewPool);
             }
         });
     });

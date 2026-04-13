@@ -129,6 +129,13 @@
                     </select>
                 </div>
                 <div>
+                    <span><strong>Colors:</strong></span>
+                    <select id="sim-color-filter">
+                        <option value="all">All Colors</option>
+                        <option value="on-color">College Legal</option>
+                    </select>
+                </div>
+                <div>
                     <span><strong>Group Pool By:</strong></span>
                     <select id="sim-group-by">
                         <option value="mana">Mana Value</option>
@@ -152,6 +159,8 @@
         <div class="modal-overlay" id="modal-overlay"></div>
         <div class="modal-content">
             <button id="modal-close" class="modal-close">&times;</button>
+            <button id="modal-prev" class="modal-nav hidden">◀</button>
+            <button id="modal-next" class="modal-nav hidden">▶</button>
             <div class="card-detail">
                 <div class="card-image-container">
                     <img id="modal-image" src="" alt="Card Image">

@@ -430,7 +430,22 @@ searchInput.addEventListener('input', applyFilters);
 colorFilter.addEventListener('change', applyFilters);
 btnGallery.addEventListener('click', toggleViewMode);
 
-function openCardModal(card) {
+let modalContextPool = [];
+let modalCurrentIndex = -1;
+
+function openCardModal(card, contextPool = null) {
+    if (contextPool && contextPool.length > 1) {
+        modalContextPool = contextPool;
+        modalCurrentIndex = contextPool.findIndex(c => c.name === card.name);
+        document.getElementById('modal-prev').classList.remove('hidden');
+        document.getElementById('modal-next').classList.remove('hidden');
+    } else {
+        modalContextPool = [];
+        modalCurrentIndex = -1;
+        document.getElementById('modal-prev').classList.add('hidden');
+        document.getElementById('modal-next').classList.add('hidden');
+    }
+
     document.getElementById('modal-image').src = getCardImage(card);
     document.getElementById('modal-name').textContent = card.name;
     document.getElementById('modal-mana').innerHTML = parseManaCost(card.mana_cost);
@@ -457,6 +472,25 @@ function openCardModal(card) {
     
     document.getElementById('card-modal').classList.remove('hidden');
 }
+
+function navigateModal(direction) {
+    if (modalCurrentIndex === -1 || modalContextPool.length === 0) return;
+    let nextIdx = modalCurrentIndex + direction;
+    if (nextIdx < 0) nextIdx = modalContextPool.length - 1;
+    if (nextIdx >= modalContextPool.length) nextIdx = 0;
+    openCardModal(modalContextPool[nextIdx], modalContextPool);
+}
+
+document.getElementById('modal-prev').addEventListener('click', () => navigateModal(-1));
+document.getElementById('modal-next').addEventListener('click', () => navigateModal(1));
+
+window.addEventListener('keydown', (e) => {
+    if (!document.getElementById('card-modal').classList.contains('hidden')) {
+        if (e.key === 'ArrowLeft') navigateModal(-1);
+        else if (e.key === 'ArrowRight') navigateModal(1);
+        else if (e.key === 'Escape') document.getElementById('card-modal').classList.add('hidden');
+    }
+});
 
 // Add event listeners for modal close
 document.getElementById('modal-close').addEventListener('click', () => {
