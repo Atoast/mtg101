@@ -119,14 +119,24 @@
                 <button class="college-btn" data-college="quandrix">Quandrix (G/U)</button>
             </div>
 
-            <div class="college-controls" style="margin-top:-1rem;">
-                <span><strong>Group Pool By:</strong></span>
-                <select id="sim-group-by">
-                    <option value="mana">Mana Value</option>
-                    <option value="rarity">Rarity</option>
-                    <option value="type">Card Type</option>
-                    <option value="keyword">Keyword</option>
-                </select>
+            <div class="college-controls" style="margin-top:-1rem; display:flex; gap:1rem;">
+                <div>
+                    <span><strong>View:</strong></span>
+                    <select id="sim-origin-filter">
+                        <option value="all">Entire Pool</option>
+                        <option value="seeded">Seeded Booster</option>
+                        <option value="play">Play Boosters</option>
+                    </select>
+                </div>
+                <div>
+                    <span><strong>Group Pool By:</strong></span>
+                    <select id="sim-group-by">
+                        <option value="mana">Mana Value</option>
+                        <option value="rarity">Rarity</option>
+                        <option value="type">Card Type</option>
+                        <option value="keyword">Keyword</option>
+                    </select>
+                </div>
             </div>
         </div>
 
