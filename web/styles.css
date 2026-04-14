@@ -112,6 +112,69 @@ body {
     box-shadow: 0 15px 20px -3px rgba(0,0,0,0.6);
 }
 
+/* Deck Builder UI */
+#sim-deck-sidebar {
+    width: 260px; flex-shrink: 0;
+    background: var(--panel-bg); border-radius: 8px; border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg); overflow: hidden;
+    height: 100%; display: flex; flex-direction: column;
+}
+.deck-sidebar-header {
+    background: var(--surface-bg); padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.deck-sidebar-header h3 { margin: 0; font-size: 1.1rem; font-weight: 600; }
+.deck-list-vertical {
+    overflow-y: auto; flex: 1; padding: 0.25rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+.deck-list-vertical::-webkit-scrollbar { width: 4px; }
+.deck-list-vertical::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+.deck-list-vertical:hover { scrollbar-color: rgba(255,255,255,0.3) transparent; }
+.deck-list-vertical:hover::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); }
+
+.deck-list-group-header {
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--text-muted); padding: 0.5rem 1rem 0.2rem; font-weight: bold;
+}
+.deck-item {
+    display: flex; gap: 0.4rem; align-items: center; padding: 0.35rem 1rem;
+    cursor: pointer; transition: background 0.1s; border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 0.9rem;
+}
+.deck-item:hover { background: rgba(255,255,255,0.08); }
+.deck-item-mana { display: flex; gap: 1px; transform: scale(0.85); transform-origin: left center; }
+.deck-item-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.card-wrapper {
+    position: relative; width: 100%;
+}
+.card-wrapper .grid-card {
+    display: block;
+}
+.in-deck {
+    outline: 4px solid #22c55e;
+    outline-offset: -2px;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.6) !important;
+}
+.magnifier-btn {
+    position: absolute; bottom: 5%; right: 5%;
+    width: 2.5rem; height: 2.5rem;
+    background: rgba(0,0,0,0.8); color: white;
+    font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    cursor: pointer; z-index: 5;
+    border: 1px solid var(--border-color);
+}
+.card-wrapper:hover .magnifier-btn {
+    opacity: 1;
+}
+.magnifier-btn:hover {
+    background: var(--accent);
+}
+
 /* Detailed List View */
 .detailed-view { display: flex; flex-direction: column; gap: 2rem; max-width: 1000px; margin: 0 auto; padding-bottom: 2rem; width: 100%; }
 .detailed-card { display: flex; gap: 2rem; background: var(--panel-bg); border-radius: 8px; border: 1px solid var(--border-color); box-shadow: var(--shadow-lg); padding: 2rem; scroll-margin-top: 2rem; }
@@ -171,7 +234,13 @@ body {
 .college-controls { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; font-size: 1rem; }
 .college-controls select { padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); color: white; cursor: pointer; }
 
-.college-groups-container { flex: 1; overflow-y: auto; padding: 2rem 3rem; background: var(--bg-color); }
+.college-groups-container { 
+    flex: 1; overflow-y: auto; padding: 2rem 3rem; background: var(--bg-color); 
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+.college-groups-container::-webkit-scrollbar { width: 6px; }
+.college-groups-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 6px; }
 .group-section { margin-bottom: 4rem; }
 .group-section-header { font-size: 1.5rem; font-weight: 600; padding-bottom: 0.5rem; border-bottom: 2px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: bottom; }
 .group-count { font-size: 1rem; font-weight: 400; color: var(--text-muted); }

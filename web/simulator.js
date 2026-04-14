@@ -4,7 +4,20 @@
  */
 
 // We assume allCards array exists globally from app.js
+let simUidCounter = 0;
+
+// Per-college state: each entry stores { pool: [], deck: Set }
+const collegeState = {};
+function getCollegeState(collegeId) {
+    if (!collegeState[collegeId]) {
+        collegeState[collegeId] = { pool: [], deck: new Set() };
+    }
+    return collegeState[collegeId];
+}
+
+// Active references (always point to the current college's state)
 let simulatedPool = [];
+let simMainDeck = new Set();
 
 function generatePrereleasePool(collegeId) {
     const clg = COLLEGES[collegeId];
@@ -51,7 +64,7 @@ function generatePrereleasePool(collegeId) {
         return res;
     };
 
-    const tagOrigin = (cardsPool, originName) => cardsPool.map(c => ({ ...c, _origin: originName }));
+    const tagOrigin = (cardsPool, originName) => cardsPool.map(c => ({ ...c, _origin: originName, _uid: simUidCounter++ }));
 
     // 1. Generate 1x College Seeded Pack
     simulatedPool.push(...tagOrigin(drawN('seededCommons', commons.filter(isLegalInCollege), 8), 'seeded'));
@@ -114,20 +127,74 @@ simCollegeBtns.forEach(btn => {
     btn.addEventListener('click', () => {
         simCollegeBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+
+        // Save current state back before switching
+        getCollegeState(activeSimCollege).pool = simulatedPool;
+        getCollegeState(activeSimCollege).deck = simMainDeck;
+
         activeSimCollege = btn.dataset.college;
-        
-        simGroupsContainer.innerHTML = `<div style="text-align:center; padding: 4rem; color:var(--text-muted); font-size:1.2rem;">
-            Click "Generate Sealed Pool" to crack 6 new packs for ${COLLEGES[activeSimCollege].name}!
-        </div>`;
-        simulatedPool = [];
+
+        // Restore state for the new college
+        const state = getCollegeState(activeSimCollege);
+        simulatedPool = state.pool;
+        simMainDeck = state.deck;
+
+        if (simulatedPool.length > 0) {
+            // College already has a generated pool — restore it
+            renderSimulatorPool(simulatedPool);
+        } else {
+            // Fresh college — show empty prompt
+            simGroupsContainer.innerHTML = `<div style="text-align:center; padding: 4rem; color:var(--text-muted); font-size:1.2rem;">
+                Click "Generate Sealed Pool" to crack 6 new packs for ${COLLEGES[activeSimCollege].name}!
+            </div>`;
+            const deckSidebar = document.getElementById('sim-deck-sidebar');
+            if (deckSidebar) deckSidebar.classList.add('hidden');
+        }
     });
 });
 
 btnGeneratePool.addEventListener('click', () => {
-    if (!allCards || allCards.length === 0) return; // Prevent clicking before loaded
+    if (!allCards || allCards.length === 0) return;
+    // Generate a fresh pool for this college, clearing its existing deck
+    simMainDeck = new Set();
     const pool = generatePrereleasePool(activeSimCollege);
-    renderSimulatorPool(pool);
+    simulatedPool = pool;
+    // Persist immediately
+    getCollegeState(activeSimCollege).pool = simulatedPool;
+    getCollegeState(activeSimCollege).deck = simMainDeck;
+    renderSimulatorPool(simulatedPool);
 });
+
+function copyDeckToArena() {
+    if (simMainDeck.size === 0) {
+        alert('Your deck is empty! Add some cards first.');
+        return;
+    }
+
+    const deckCards = simulatedPool.filter(c => simMainDeck.has(c._uid));
+    const sideboardCards = simulatedPool.filter(c => !simMainDeck.has(c._uid));
+
+    const formatLine = (c) => {
+        const set = (c.set || 'sos').toUpperCase();
+        const num = c.collector_number || '0';
+        return `1 ${c.name} (${set}) ${num}`;
+    };
+
+    const deckLines = deckCards.map(formatLine).join('\n');
+    const sideLines = sideboardCards.map(formatLine).join('\n');
+    const output = `${deckLines}\n\nSideboard\n${sideLines}`;
+
+    navigator.clipboard.writeText(output).then(() => {
+        const btn = document.getElementById('btn-copy-arena');
+        const orig = btn.textContent;
+        btn.textContent = '✅ Copied!';
+        btn.style.background = 'rgba(34,197,94,0.3)';
+        setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
+    }).catch(() => {
+        alert('Could not copy to clipboard automatically. Please try again.');
+    });
+}
+
 
 simGroupBy.addEventListener('change', () => {
     if (simulatedPool.length > 0) {
@@ -147,6 +214,8 @@ simColorFilter.addEventListener('change', () => {
     }
 });
 
+document.getElementById('btn-copy-arena').addEventListener('click', copyDeckToArena);
+
 function renderSimulatorPool(pool) {
     const clg = COLLEGES[activeSimCollege];
     const groupBy = simGroupBy.value;
@@ -157,6 +226,8 @@ function renderSimulatorPool(pool) {
     let viewPool = pool;
     if (originFilter === 'seeded') viewPool = pool.filter(c => c._origin === 'seeded');
     else if (originFilter === 'play') viewPool = pool.filter(c => c._origin === 'play');
+    else if (originFilter === 'deck') viewPool = pool.filter(c => simMainDeck.has(c._uid));
+    else if (originFilter === 'sideboard') viewPool = pool.filter(c => !simMainDeck.has(c._uid));
 
     if (colorFilter === 'on-color') {
         const isLegal = (c) => {
@@ -231,9 +302,13 @@ function renderSimulatorPool(pool) {
         groups[k].forEach(card => {
             const imgSrc = getCardImage(card);
             if (!imgSrc) return;
-            // Ensure any special borders or badges for foils could theoretically be added here
-            // Just displaying them standard for now
-            gridHtml += `<img src="${imgSrc}" class="grid-card sim-grid-card" title="${card.name}" data-name="${card.name}">`;
+            const inDeckClass = simMainDeck.has(card._uid) ? 'in-deck' : '';
+            gridHtml += `
+                <div class="card-wrapper">
+                    <img src="${imgSrc}" class="grid-card sim-grid-card ${inDeckClass}" title="${card.name}" data-name="${card.name}" data-uid="${card._uid}">
+                    <div class="magnifier-btn">🔍</div>
+                </div>
+            `;
         });
 
         const section = document.createElement('div');
@@ -250,14 +325,75 @@ function renderSimulatorPool(pool) {
         simGroupsContainer.appendChild(section);
     });
 
-    const simImgs = simGroupsContainer.querySelectorAll('.sim-grid-card');
-    simImgs.forEach(img => {
-        img.addEventListener('click', (e) => {
-            const cName = e.target.dataset.name;
-            const card = pool.find(c => c.name === cName);
-            if (card) {
-                openCardModal(card, viewPool);
-            }
+    // Render Sidebar Deck
+    const deckSidebar = document.getElementById('sim-deck-sidebar');
+    const deckList = document.getElementById('sim-deck-list');
+    const deckCountText = document.getElementById('deck-count-text');
+
+    if (pool.length > 0) {
+        deckSidebar.classList.remove('hidden');
+        deckCountText.textContent = simMainDeck.size;
+        
+        let deckHtml = '';
+        const deckCards = pool.filter(c => simMainDeck.has(c._uid));
+        
+        // Group deck cards by CMC for clean list
+        const deckGroups = {};
+        deckCards.forEach(c => {
+            const cmc = c.cmc || 0;
+            const key = cmc >= 7 ? '7+' : cmc.toString();
+            if(!deckGroups[key]) deckGroups[key] = [];
+            deckGroups[key].push(c);
         });
+
+        // Sort keys ascending
+        const sortedDeckKeys = Object.keys(deckGroups).sort((a,b) => parseInt(a) - parseInt(b));
+
+        sortedDeckKeys.forEach(k => {
+            deckHtml += `<div class="deck-list-group-header">Mana Value ${k}</div>`;
+            
+            // Sort by name within CMC
+            deckGroups[k].sort((a,b) => a.name.localeCompare(b.name)).forEach(c => {
+                deckHtml += `
+                    <div class="deck-item" data-uid="${c._uid}">
+                        <div class="deck-item-mana">${parseManaCost(c.mana_cost || '')}</div>
+                        <div class="deck-item-name">${c.name}</div>
+                    </div>
+                `;
+            });
+        });
+
+        deckList.innerHTML = deckHtml;
+
+        // Bind clicks to dynamically remove from deck
+        deckList.querySelectorAll('.deck-item').forEach(el => {
+            el.addEventListener('click', () => {
+                const cUid = parseInt(el.dataset.uid);
+                simMainDeck.delete(cUid);
+                renderSimulatorPool(simulatedPool);
+            });
+        });
+    } else {
+        deckSidebar.classList.add('hidden');
+    }
+
+    const simWrappers = simGroupsContainer.querySelectorAll('.card-wrapper');
+    simWrappers.forEach(wrapper => {
+        const img = wrapper.querySelector('.sim-grid-card');
+        const mag = wrapper.querySelector('.magnifier-btn');
+        const cUid = parseInt(img.dataset.uid);
+        const card = pool.find(c => c._uid === cUid);
+        
+        if (card) {
+            mag.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openCardModal(card, viewPool);
+            });
+            img.addEventListener('click', () => {
+                if (simMainDeck.has(cUid)) simMainDeck.delete(cUid);
+                else simMainDeck.add(cUid);
+                renderSimulatorPool(simulatedPool);
+            });
+        }
     });
 }
