@@ -19,20 +19,6 @@ function generatePrereleasePool(collegeId) {
     const uncommons = sosCards.filter(c => c.rarity === 'uncommon');
     const raresAndMythics = sosCards.filter(c => c.rarity === 'rare' || c.rarity === 'mythic');
 
-    // Helper to get random item
-    const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
-    const getRandomN = (arr, n) => {
-        let result = [];
-        let pool = [...arr];
-        for(let i=0; i < n; i++) {
-            if(pool.length === 0) break;
-            const idx = Math.floor(Math.random() * pool.length);
-            result.push(pool[idx]);
-            pool.splice(idx, 1);
-        }
-        return result;
-    };
-
     // Helper: is card legal in college
     const isLegalInCollege = (c) => {
         const iden = c.color_identity || [];
@@ -40,24 +26,42 @@ function generatePrereleasePool(collegeId) {
         return iden.every(color => clg.colors.includes(color));
     };
 
-    // 1. Generate 1x College Seeded Pack
-    // Seeded pack contains ONLY cards that fit the color identity of the college + colorless
-    const seededCommons = commons.filter(isLegalInCollege);
-    const seededUncommons = uncommons.filter(isLegalInCollege);
-    const seededRares = raresAndMythics.filter(isLegalInCollege);
+    // Stateful pools to simulate collation and prevent excessive duplicates
+    let draftPools = {
+        commons: [...commons],
+        uncommons: [...uncommons],
+        raresAndMythics: [...raresAndMythics],
+        seededCommons: [...commons.filter(isLegalInCollege)],
+        seededUncommons: [...uncommons.filter(isLegalInCollege)],
+        seededRares: [...raresAndMythics.filter(isLegalInCollege)],
+        soaCards: [...soaCards],
+        spgCards: [...spgCards]
+    };
+
+    // Helper to draw 1 card with depletion
+    const drawOne = (poolName, originalArray) => {
+        if (draftPools[poolName].length === 0) draftPools[poolName] = [...originalArray]; // Refill if empty
+        const idx = Math.floor(Math.random() * draftPools[poolName].length);
+        return draftPools[poolName].splice(idx, 1)[0];
+    };
+
+    const drawN = (poolName, originalArray, n) => {
+        let res = [];
+        for (let i = 0; i < n; i++) res.push(drawOne(poolName, originalArray));
+        return res;
+    };
 
     const tagOrigin = (cardsPool, originName) => cardsPool.map(c => ({ ...c, _origin: originName }));
 
-    simulatedPool.push(...tagOrigin(getRandomN(seededCommons, 8), 'seeded'));
-    simulatedPool.push(...tagOrigin(getRandomN(seededUncommons, 3), 'seeded'));
+    // 1. Generate 1x College Seeded Pack
+    simulatedPool.push(...tagOrigin(drawN('seededCommons', commons.filter(isLegalInCollege), 8), 'seeded'));
+    simulatedPool.push(...tagOrigin(drawN('seededUncommons', uncommons.filter(isLegalInCollege), 3), 'seeded'));
     
     // Guaranteed rare/mythic for college
-    const collegeRare = getRandom(seededRares);
-    simulatedPool.push(...tagOrigin([collegeRare], 'seeded'));
+    simulatedPool.push(...tagOrigin([drawOne('seededRares', raresAndMythics.filter(isLegalInCollege))], 'seeded'));
 
     // Guaranteed foil promo for college
-    const promoFoil = getRandom(seededRares);
-    simulatedPool.push(...tagOrigin([promoFoil], 'seeded'));
+    simulatedPool.push(...tagOrigin([drawOne('seededRares', raresAndMythics.filter(isLegalInCollege))], 'seeded'));
 
     // 2. Generate 5x Play Boosters
     for (let p = 0; p < 5; p++) {
@@ -69,28 +73,28 @@ function generatePrereleasePool(collegeId) {
         // 1 Foil Wildcard (any rarity)
         // 1 Land (we skip basic lands for the visual pool if we don't have them, or just use another common)
 
-        simulatedPool.push(...tagOrigin(getRandomN(commons, 7), 'play')); // Using 7 commons to replace the land slot
-        simulatedPool.push(...tagOrigin(getRandomN(uncommons, 3), 'play'));
-        simulatedPool.push(...tagOrigin([getRandom(raresAndMythics)], 'play'));
+        simulatedPool.push(...tagOrigin(drawN('commons', commons, 7), 'play')); // Using 7 commons to replace the land slot
+        simulatedPool.push(...tagOrigin(drawN('uncommons', uncommons, 3), 'play'));
+        simulatedPool.push(...tagOrigin([drawOne('raresAndMythics', raresAndMythics)], 'play'));
 
         // Special Slot (15% SOA, 5% SPG, 80% Common)
         const roll = Math.random();
         if (roll < 0.05 && spgCards.length > 0) {
-            simulatedPool.push(...tagOrigin([getRandom(spgCards)], 'play'));
+            simulatedPool.push(...tagOrigin([drawOne('spgCards', spgCards)], 'play'));
         } else if (roll < 0.20 && soaCards.length > 0) {
-            simulatedPool.push(...tagOrigin([getRandom(soaCards)], 'play'));
+            simulatedPool.push(...tagOrigin([drawOne('soaCards', soaCards)], 'play'));
         } else {
-            simulatedPool.push(...tagOrigin([getRandom(commons)], 'play'));
+            simulatedPool.push(...tagOrigin([drawOne('commons', commons)], 'play'));
         }
 
         // Foil Wildcard (any rarity, 10% rare/mythic, 25% uncommon, 65% common)
         const foilRoll = Math.random();
         if (foilRoll < 0.10) {
-            simulatedPool.push(...tagOrigin([getRandom(raresAndMythics)], 'play'));
+            simulatedPool.push(...tagOrigin([drawOne('raresAndMythics', raresAndMythics)], 'play'));
         } else if (foilRoll < 0.35) {
-            simulatedPool.push(...tagOrigin([getRandom(uncommons)], 'play'));
+            simulatedPool.push(...tagOrigin([drawOne('uncommons', uncommons)], 'play'));
         } else {
-            simulatedPool.push(...tagOrigin([getRandom(commons)], 'play'));
+            simulatedPool.push(...tagOrigin([drawOne('commons', commons)], 'play'));
         }
     }
 
