@@ -306,6 +306,26 @@ function formatOracleText(text) {
     return text.split('\n').map(p => `<p>${p}</p>`).join('');
 }
 
+function getCardOracleHtml(card) {
+    if (card.oracle_text) return formatOracleText(card.oracle_text);
+    if (card.card_faces) {
+        return card.card_faces.map(f => {
+            const pt = (f.power && f.toughness) ? ` <strong>[${f.power}/${f.toughness}]</strong>` : '';
+            return `<strong>${f.name}</strong>${pt}<br>${formatOracleText(f.oracle_text || '')}`;
+        }).join('<hr class="dc-divider" style="margin: 0.8rem 0; opacity: 0.5;">');
+    }
+    return '';
+}
+
+function getCardFlavorHtml(card) {
+    if (card.flavor_text) return `"${card.flavor_text}"`;
+    if (card.card_faces) {
+        const flavors = card.card_faces.map(f => f.flavor_text).filter(Boolean);
+        if (flavors.length > 0) return flavors.map(f => `"${f}"`).join(' // ');
+    }
+    return '';
+}
+
 function getCardImage(card) {
     if (card.image_uris && card.image_uris.normal) return card.image_uris.normal; 
     if (card.card_faces && card.card_faces[0].image_uris) return card.card_faces[0].image_uris.normal;
@@ -332,7 +352,8 @@ function renderDetailedView(cards) {
         const imgSrc = getCardImage(card);
         if (!imgSrc) return;
 
-        let flavorHtml = card.flavor_text ? `<div class="dc-flavor">"${card.flavor_text}"</div>` : '';
+        const flavorResult = getCardFlavorHtml(card);
+        let flavorHtml = flavorResult ? `<div class="dc-flavor">${flavorResult}</div>` : '';
         let ptHtml = (card.power && card.toughness) ? `<div class="dc-pt">${card.power}/${card.toughness}</div>` : '';
         if (card.loyalty) ptHtml = `<div class="dc-pt">Loyalty: ${card.loyalty}</div>`;
 
@@ -350,7 +371,7 @@ function renderDetailedView(cards) {
                 </div>
                 <div class="dc-type">${card.type_line || ''}</div>
                 <hr class="dc-divider">
-                <div class="dc-oracle">${formatOracleText(card.oracle_text)}</div>
+                <div class="dc-oracle">${getCardOracleHtml(card)}</div>
                 ${flavorHtml}
                 ${ptHtml}
             </div>
@@ -450,10 +471,11 @@ function openCardModal(card, contextPool = null) {
     document.getElementById('modal-name').textContent = card.name;
     document.getElementById('modal-mana').innerHTML = parseManaCost(card.mana_cost);
     document.getElementById('modal-type').textContent = card.type_line;
-    document.getElementById('modal-oracle').innerHTML = formatOracleText(card.oracle_text);
+    document.getElementById('modal-oracle').innerHTML = getCardOracleHtml(card);
     
-    if (card.flavor_text) {
-        document.getElementById('modal-flavor').innerHTML = `<p>"${card.flavor_text}"</p>`;
+    const flavorResult = getCardFlavorHtml(card);
+    if (flavorResult) {
+        document.getElementById('modal-flavor').innerHTML = `<p>${flavorResult}</p>`;
         document.getElementById('modal-flavor').classList.remove('hidden');
     } else document.getElementById('modal-flavor').classList.add('hidden');
 
